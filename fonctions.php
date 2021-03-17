@@ -28,10 +28,14 @@ function LireFichier($adresse){
 
     //vérifier conformité fichier
     //[]
+
+    return $fichier;
 }
 
 //Sectionner les infos des logs et retourner le tableau
 function SeparerInfos($ficherLog){
+    var_dump($ficherLog);
+
     /*
     RECUPERER :
     adresse IP source,
@@ -40,15 +44,22 @@ function SeparerInfos($ficherLog){
     code de retour HTTP du serveur web (ex: 200, 404, 403, etc),
     type d'agent sur le système distant (ex: chrome, firefox, safari, etc).
     */
+    
 
-    //récupérer chaque ligne
-    $infosLignes = array();
+    //récupérer chaque ligne séparément
+    $lignes = explode("\n", $ficherLog);
 
-    foreach ($infosLignes as $ligne){
-        $infosLigne = explode(" ", $ligne);
+    var_dump($lignes);
 
+    //récupérer dans chaque ligne chaque information séparément 
+    foreach ($lignes as $ligne){
+        $infos = explode(" ", $ligne);
+        $
         //enrgistrer ces infos dans le tableau qui contient tout
 
+        7.5.3.1 - - [2/Jan/2000:02:03:04 +0100] "GET / HTTP/1.0" 200 53 "-" "Mozilla/5.0 (Windows NT 6.1) "
+
+        var_dump($infosLigne);
     }  
     return [];
 }  
@@ -59,7 +70,6 @@ function AnalyserDonnees($informations){
 
     return[];
 }
-
 
 
 
