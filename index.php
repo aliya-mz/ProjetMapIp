@@ -6,31 +6,28 @@ Auteur : Aliya Myaz
 Description : page principale du projet, où la map indiquant les positions des adresses ip est affichée
 */
 
-//ajouter les deux fichiers de fonctions
+//inclure le fichier de fonctions
 require 'fonctions.php';
 
-//ajouter un bouton qui permet de lire le fichier et d'afficher le résulat
-
-//afficher la map
-//https://leafletjs.com/
+//Executer le programme permettant de traiter et afficher les données
+ExecuterProgramme();
 ?>
 
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset=UTF-8>
-        <title>Bibliothèque</title>
+        <title>Accueil</title>
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="javascript"/>
     </head>
-
     <body>
-
-      <nav>
-        <a class="lienBouton" href="ajouterLivre.php"><span>Ajouter un livre</span></a>
-      </nav>
-
+    <script src="fonctions.js"></script>
       <main>
-        
+        <?php
+        //Affichage de la map https://leafletjs.com/
+        //[]
+        ?>
       </main>
     </body>
 </html>

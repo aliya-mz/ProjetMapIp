@@ -74,6 +74,13 @@ function RecupererLocationIp($informations){
 
 //afficher les visiteurs sur la map
 function AfficherVisiteur(){
+    /*
+    COULEURS DES MARQUEURS
+    [1,5] -> vert
+    [6,10] -> orange
+    >10 -> rouge
+    */
+
     //récupérer les coordonnées avec l'adresse IP grâce à l'API
 
     //placer le tableau de coordonnées sur la map leaflet
