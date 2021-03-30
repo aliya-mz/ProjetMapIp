@@ -19,16 +19,22 @@ ExecuterProgramme();
         <meta charset=UTF-8>
         <title>Accueil</title>
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
-        <link href="css/style.css" rel="stylesheet" type="javascript"/>
+        <script src="fonctions.js" type="javascript"></script>
+        <!--Leaflet-->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
     </head>
     <body>
     <script src="fonctions.js"></script>
       <main>
         <?php
-        //Affichage de la map https://leafletjs.com/
-        //[]
+        //Affichage de la map https://leafletjs.com/        
         ?>
+        <!--Map-->
+        <div id="mapid" class="leaflet-container leaflet-touch leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom"></div>
+        <script>  
+          ShowMap();
+        </script>
       </main>
     </body>
 </html>
-
