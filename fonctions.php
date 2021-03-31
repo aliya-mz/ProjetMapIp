@@ -10,6 +10,30 @@ ini_set('memory_limit','32M');
 
 define("ERREUR_DONNEE", "donnée inconnue");
 
+
+function UploadFichier(){
+    $fichier = $_FILES["fichier"];
+
+    if(preg_match('/log/',$fichier['type'])){              
+        //Nettoyer le nom du fichier
+        $nom_fichier = preg_replace('/[^a-z0-9\.\-]/i','',$fichier['name']);
+  
+        //Déplacer depuis le répertoire temporaire
+        var_dump(move_uploaded_file($fichier['tmp_name'],'./uploads/'.$nom_fichier));
+        
+        //enregistrer le nom nettoyé et unique
+        $fichier['name'] = $nom_fichier;
+    }
+    else{
+        $erreur = 'Le fichier doit être de type log';
+        echo $erreur;
+        return false;
+    }
+  
+    //Retourner le fichier log
+    return $fichier;
+}
+
 //Processus de traitement et affichage des informations 
 function ExecuterProgramme($adresse){
     //Lire le fichier
@@ -168,4 +192,8 @@ function FormatageInfo(){
 //Appeler l'api de ipinfo pour récupérer les coordonnées géographiques de chaque adresse ip
 function RecupererLocationIp($informations){
     return[];
+}
+
+function AfficherInfos(){
+    //Afficher le pays et la ville
 }

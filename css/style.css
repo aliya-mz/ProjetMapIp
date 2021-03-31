@@ -1,8 +1,45 @@
 
+body{
+    margin:0;
+    padding:0;
+    background-color: whitesmoke;
+}
+
+main{
+    margin:0;
+    padding:0;
+    background-color: whitesmoke;
+}
+
 /*Map*/
 #mapid { 
-height: 800px; 
-width:80%;
+height: 850px; 
+width:100%;
 margin:auto;
+}
+
+/*Menu*/
+#divMenu{
+    height:100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: whitesmoke;
+}
+
+input{
+    margin : 40px;
+}
+
+button{
+    margin : 40px;
+    border : 1px solid grey;
+    border-radius: 2px;
+}
+
+
+#divInfos{
+
 }
 
