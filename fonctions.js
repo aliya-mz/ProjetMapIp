@@ -1,3 +1,8 @@
+/*
+Projet : MapIp
+Date : Mars 2021
+Description : Gestion de la map
+*/
 
 //Map
 var mymap = L.map('mapid').setView([51.505, -0.09], 13);
@@ -32,6 +37,7 @@ function PlacerEmplacements(markers){
         NouvelEmplacement(markers[0], markers[1], markers[1], markers[1]);
     })
 }
+
 function NouvelEmplacement(iterations, latitude, longitude, infos){
     if(iterations <= 5){
         L.marker([latitude, longitude], {icon: greenIcon}).addTo(map).bindPopup(infos);
@@ -43,3 +49,39 @@ function NouvelEmplacement(iterations, latitude, longitude, infos){
         L.marker([latitude, longitude], {icon: redIcon}).addTo(map).bindPopup(infos);
     }
 }
+
+function RecupererLocation(infosIps){
+    /*
+    Données à récupérer :
+    "city": "Genève"
+    "country": "CH"
+    "loc": "46.2022,6.1457"
+    */
+
+    //Pour chaque IP, récupérer les coordonnées géographiques, le pays et la ville
+    infosIps.forEach(infosIp => {
+        let pays = "";
+        let ville = "";
+        let location = "";
+
+        //appeler l'api avec l'adresse ip en cours
+        fetch("https://ipinfo.io/"+infoIp[0]+"?token=d8756d314f72ea").then(
+        (response) => response.json()
+        ).then(
+            pays = jsonResponse.country,
+            ville = jsonResponse.city,
+            location = jsonResponse.loc
+            //(jsonResponse) => console.log(jsonResponse.ip, jsonResponse.country)
+        )   
+        
+        //enregistrer dans le tableau
+        infoIp[6] = pays;
+        infoIp[7] = ville;
+        infoIp[8] = location;
+    });  
+    
+    print(infosIps);
+    
+    return infosIps;
+}
+

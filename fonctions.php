@@ -6,13 +6,14 @@ Auteur : Aliya Myaz
 Description : fonctions php du projet
 */
 
+ini_set('memory_limit','32M');
+
 define("ERREUR_DONNEE", "donnée inconnue");
 
 //Processus de traitement et affichage des informations 
-function ExecuterProgramme(){
+function ExecuterProgramme($adresse){
     //Lire le fichier
-    $fichier = (LireFichier("access.log"));
-    /*
+    $fichier = (LireFichier($adresse));
     //Appeler la fonction qui sépare les informations récupérées 
     $informations = SeparerInfos($fichier);
     //Analyser les données pour obtenir le nombre d'appel pour chaque ip
@@ -20,7 +21,6 @@ function ExecuterProgramme(){
     //Récupérer les coordonéées géographiques grâce à l'API
     $informations = RecupererLocationIp($informations);
     //Afficher les visiteurs sur la map
-    AfficherVisiteur($informations);*/
 }
 
 //Lire le fichier log - ok (sauv verification type fichier)
@@ -35,27 +35,29 @@ function LireFichier($adresse){
     return $fichier;
 }
 
-/*
 //Sectionner les infos des logs et retourner le tableau - ok
 function SeparerInfos($ficherLog){
-    var_dump($ficherLog);
-
     //récupérer chaque ligne séparément
     $lignes = explode("\n", $ficherLog);
 
     $infosClassees = [];
+    $infoslignesClassees = [];
+    $compteur = 0;
     //récupérer dans chaque ligne chaque information séparément 
     foreach ($lignes as $ligne){
-        //enrgistrer ces infos dans le tableau qui contient tout
-
         //ip
         $info = explode(" ", $ligne);
         $infosClassees[0] = $info[0];
 
         //date
-        if(!empty(explode(" ", explode("-", $ligne)[2])[1])){            
-            $info = str_replace("[", "", explode(" ", explode("-", $ligne)[2])[1]);
-            if($info == ""){
+        if(array_key_exists(2,explode("-", $ligne))){      
+            if(array_key_exists(1,explode(" ", explode("-", $ligne)[2]))){
+                $info = str_replace("[", "", explode(" ", explode("-", $ligne)[2])[1]);
+                if($info == ""){
+                    $info = ERREUR_DONNEE;
+                }
+            }
+            else{
                 $info = ERREUR_DONNEE;
             }
         }
@@ -65,9 +67,14 @@ function SeparerInfos($ficherLog){
         $infosClassees[1] = $info;
 
         //Url demandée
-        if(!empty(explode(" ", explode("HTTP/", $ligne)[1])[0])){
-            $info = explode(" ", explode("HTTP/", $ligne)[1])[0];
-            if($info == ""){
+        if(array_key_exists(1, explode("HTTP/", $ligne))){
+            if(array_key_exists(0,explode(" ", explode("HTTP/", $ligne)[1]))){
+                $info = explode(" ", explode("HTTP/", $ligne)[1])[0];
+                if($info == ""){
+                    $info = ERREUR_DONNEE;
+                }
+            }
+            else{
                 $info = ERREUR_DONNEE;
             }
         }
@@ -77,9 +84,14 @@ function SeparerInfos($ficherLog){
         $infosClassees[2] = $info;
 
         //code retour HTTP
-        if(!empty(explode(" ", explode("HTTP/", $ligne)[1])[1])){
-            $info = explode(" ", explode("HTTP/", $ligne)[1])[1];
-            if($info == ""){
+        if(array_key_exists(1,explode("HTTP/", $ligne))){
+            if(array_key_exists(1,explode(" ", explode("HTTP/", $ligne)[1]))){
+                $info = explode(" ", explode("HTTP/", $ligne)[1])[1];
+                if($info == ""){
+                    $info = ERREUR_DONNEE;
+                }
+            }
+            else{
                 $info = ERREUR_DONNEE;
             }
         }
@@ -89,64 +101,71 @@ function SeparerInfos($ficherLog){
         $infosClassees[3] = $info;
 
         //Type d'agent
-        if(!empty(explode("/", explode("-", $ligne)[3])[0])){
-            $info = str_replace("\" \"", "", explode("/", explode("-", $ligne)[3])[0]);
-            if($info == ""){
+        if(array_key_exists(3, explode("-", $ligne))){
+            if(array_key_exists(0,explode("/", explode("-", $ligne)[3]))){
+                $info = str_replace("\" \"", "", explode("/", explode("-", $ligne)[3])[0]);
+                if($info == ""){
+                    $info = ERREUR_DONNEE;
+                }
+            }
+            else{
                 $info = ERREUR_DONNEE;
             }
         }
         else{
             $info = ERREUR_DONNEE;
         }   
-        $infosClassees[4] = $info;        
+        $infosClassees[4] = $info;
 
-        var_dump($infosClassees);
+        //nb itérations
+        $infosClassees[5] = 1;
+
+        $infoslignesClassees[$compteur] = $infosClassees;
+        $compteur += 1;
     }  
-    return $infosClassees;
+    
+    return $infoslignesClassees;
 }  
-*/
+
 //Compter le nombre de répétion pour chaque adresse ip du tableau - ok
 function AnalyserDonnees($informations){
     //enregistrer la première attaque dans le tableau
     $infosAnalysees[0] = $informations[0];
-
+    
     //parcourir toutes les autres ip
-    for($i = 1; $i <= count($informations); $i++){        
+    for($i = 0; $i < count($informations); $i++){
+        $tailleListe = count($infosAnalysees);
         //vérifier s'il existe déjà une attaque avec cette adresse IP
-        for($j = 0; $j <= count($infosAnalysees); $j++){
+        for($j = 0; $j < $tailleListe; $j++){
             //ce n'est pas la première fois qu'on trouve l'ip dans "informations"
-            if($informations[$i][0] == $informations[$j][0]){
+            if($informations[$i][0] == $infosAnalysees[$j][0]){
                 //enregistrer les infos concernant cette ip dans la case du doublon déjà existant
+                $nbIterations = $infosAnalysees[$j][5];
                 $infosAnalysees[$j] = $informations[$i];
+                $infosAnalysees[$j][5] = $nbIterations + 1;
+
+                var_dump($j);
             }
             else{
+                echo "Okay";
+                echo $informations[$i][0] ." + ". $infosAnalysees[$j][0];
                 //sinon, enregistrer les infos de l'ip dans une nouvelle case
-                $infosAnalysees[count($infosAnalysees)] = $informations[$i];
+                $infosAnalysees[$tailleListe] = $informations[$i];
             }
         }
     }
 
+    var_dump($infosAnalysees);
+
     return $infosAnalysees;
+}
+
+//Formater les informations pour les afficher dans la popup
+function FormatageInfo(){
+
 }
 
 //Appeler l'api de ipinfo pour récupérer les coordonnées géographiques de chaque adresse ip
 function RecupererLocationIp($informations){
-    //https://ipinfo.io/
-
-
     return[];
-}
-
-//afficher les visiteurs sur la map
-function AfficherVisiteur(){
-    /*
-    COULEURS DES MARQUEURS
-    [1,5] -> vert
-    [6,10] -> orange
-    >10 -> rouge
-    */
-
-    //récupérer les coordonnées avec l'adresse IP grâce à l'API
-
-    //placer le tableau de coordonnées sur la map leaflet
 }

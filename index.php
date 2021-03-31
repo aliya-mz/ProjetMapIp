@@ -10,7 +10,9 @@ Description : page principale du projet, où la map indiquant les positions des 
 require 'fonctions.php';
 
 //Executer le programme permettant de traiter et afficher les données
-ExecuterProgramme();
+ExecuterProgramme("access.log");
+
+$infosAttaques
 ?>
 
 <!DOCTYPE html>
@@ -19,12 +21,12 @@ ExecuterProgramme();
         <meta charset=UTF-8>
         <title>Accueil</title>
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
-        <script src="fonctions.js" type="javascript"></script>
+        <script src="fonctions.js" type="tex/javascript"></script>
         <!--Leaflet-->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
     </head>
-    <body>
+    <body onload="RecupererLocation(infosAttaques)">
     <script src="fonctions.js"></script>
       <main>
         <?php
