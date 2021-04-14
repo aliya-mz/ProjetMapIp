@@ -6,31 +6,12 @@ Auteur : Aliya Myaz
 Description : fonctions php du projet
 */
 
-ini_set('memory_limit','32M');
-
 define("ERREUR_DONNEE", "donnée inconnue");
-
 
 function UploadFichier(){
     $fichier = $_FILES["fichier"];
-
-    if(preg_match('/log/',$fichier['type'])){              
-        //Nettoyer le nom du fichier
-        $nom_fichier = preg_replace('/[^a-z0-9\.\-]/i','',$fichier['name']);
-  
-        //Déplacer depuis le répertoire temporaire
-        var_dump(move_uploaded_file($fichier['tmp_name'],'./uploads/'.$nom_fichier));
-        
-        //enregistrer le nom nettoyé et unique
-        $fichier['name'] = $nom_fichier;
-    }
-    else{
-        $erreur = 'Le fichier doit être de type log';
-        echo $erreur;
-        return false;
-    }
-  
-    //Retourner le fichier log
+    //Déplacer depuis le répertoire temporaire
+    move_uploaded_file($fichier['tmp_name'],'./uploads/'.$fichier['name']);
     return $fichier;
 }
 
@@ -44,6 +25,7 @@ function ExecuterProgramme($adresse){
     $informations = AnalyserDonnees($informations);
     //Récupérer les coordonéées géographiques grâce à l'API
     $informations = RecupererLocationIp($informations);
+
     //Afficher les visiteurs sur la map
 }
 
@@ -59,7 +41,7 @@ function LireFichier($adresse){
     return $fichier;
 }
 
-//Sectionner les infos des logs et retourner le tableau - ok
+//Sectionner les infos des logs et retourner le tableau
 function SeparerInfos($ficherLog){
     //récupérer chaque ligne séparément
     $lignes = explode("\n", $ficherLog);
@@ -151,15 +133,16 @@ function SeparerInfos($ficherLog){
     return $infoslignesClassees;
 }  
 
-//Compter le nombre de répétion pour chaque adresse ip du tableau - ok
+//Compter le nombre de répétion pour chaque adresse ip du tableau
 function AnalyserDonnees($informations){
     //enregistrer la première attaque dans le tableau
     $infosAnalysees[0] = $informations[0];
     
     //parcourir toutes les autres ip
-    for($i = 0; $i < count($informations); $i++){
+    for($i = 1; $i < count($informations); $i++){
         $tailleListe = count($infosAnalysees);
         //vérifier s'il existe déjà une attaque avec cette adresse IP
+        $dejaExistante = false;
         for($j = 0; $j < $tailleListe; $j++){
             //ce n'est pas la première fois qu'on trouve l'ip dans "informations"
             if($informations[$i][0] == $infosAnalysees[$j][0]){
@@ -167,33 +150,58 @@ function AnalyserDonnees($informations){
                 $nbIterations = $infosAnalysees[$j][5];
                 $infosAnalysees[$j] = $informations[$i];
                 $infosAnalysees[$j][5] = $nbIterations + 1;
-
-                var_dump($j);
-            }
-            else{
-                echo "Okay";
-                echo $informations[$i][0] ." + ". $infosAnalysees[$j][0];
-                //sinon, enregistrer les infos de l'ip dans une nouvelle case
-                $infosAnalysees[$tailleListe] = $informations[$i];
+                $dejaExistante = true;
+                break;
             }
         }
+        if (!$dejaExistante){
+            //sinon, enregistrer les infos de l'ip dans une nouvelle case
+            $infosAnalysees[$tailleListe] = $informations[$i];
+        }
     }
-
-    var_dump($infosAnalysees);
-
     return $infosAnalysees;
-}
-
-//Formater les informations pour les afficher dans la popup
-function FormatageInfo(){
-
 }
 
 //Appeler l'api de ipinfo pour récupérer les coordonnées géographiques de chaque adresse ip
 function RecupererLocationIp($informations){
-    return[];
+    //Appeler l'API
+    foreach($informations as $information){
+        $pays = "";
+        $ville = "";
+        $latitude = 0;
+        $longitude = 0;
+
+        $url = "https://ipinfo.io/".$information[0]."?token=d8756d314f72ea";
+        $result = file_get_contents($url);
+        $infosLoc = json_decode($result, true);
+
+        var_dump($infosLoc);
+
+        //apparemment il trouve pas les index suivants alors qu'ils existent
+        $pays = $infosLoc["country"];
+        $ville = $infosLoc["city"];
+        $latitude = explode(",",$infosLoc["loc"])[0];
+        $longitude = explode(",",$infosLoc["loc"])[1];
+
+        //enregistrer les informations
+        $information[6] = $pays;
+        $information[7] = $ville;
+        $information[8] = $latitude;
+        $information[9] = $longitude;
+    }
+    
+    var_dump($informations);
+    return $informations;
 }
 
-function AfficherInfos(){
-    //Afficher le pays et la ville
+//Formater les informations pour les afficher dans la popup 
+function FormatageInfo($informations){
+    $formate = [];
+
+    for($i = 1; $i < count($informations); $i++){
+        $formate[$i] = " Lieu : ".$informations[7].", ".$informations[6];
+    }
+
+    //var_dump($formate);
+    return $formate;
 }

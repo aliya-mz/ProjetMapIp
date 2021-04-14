@@ -5,7 +5,7 @@ Description : Gestion de la map
 */
 
 //Map
-var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+var mymap = L.map('mapid').setView([ 46.2111, 6.1028], 13);
 
 function ShowMap(){	
 	//affichage de la map
@@ -19,7 +19,6 @@ function ShowMap(){
     }).addTo(mymap);
 }
 
-
 //Markers
 var LeafIcon = L.Icon.extend({
     options: {
@@ -32,9 +31,9 @@ var greenIcon = new LeafIcon({iconUrl: 'img/markerVert.png'}),
     orangeIcon = new LeafIcon({iconUrl: 'img/markerRouge.png'}),
     redIcon = new LeafIcon({iconUrl: 'img/markerOrange.png'});
 
-function PlacerEmplacements(markers){
+function PlacerMarkers(markers){
     markers.forEach((unMarker, index) => {
-        NouvelEmplacement(markers[0], markers[1], markers[1], markers[1]);
+        NouvelEmplacement(unMarker[3], unMarker[1], unMarker[2], unMarker[0]);
     })
 }
 
@@ -47,41 +46,10 @@ function NouvelEmplacement(iterations, latitude, longitude, infos){
     }
     else{
         L.marker([latitude, longitude], {icon: redIcon}).addTo(map).bindPopup(infos);
-    }
+     }
 }
 
-function RecupererLocation(infosIps){
-    /*
-    Données à récupérer :
-    "city": "Genève"
-    "country": "CH"
-    "loc": "46.2022,6.1457"
-    */
-
-    //Pour chaque IP, récupérer les coordonnées géographiques, le pays et la ville
-    infosIps.forEach(infosIp => {
-        let pays = "";
-        let ville = "";
-        let location = "";
-
-        //appeler l'api avec l'adresse ip en cours
-        fetch("https://ipinfo.io/"+infoIp[0]+"?token=d8756d314f72ea").then(
-        (response) => response.json()
-        ).then(
-            pays = jsonResponse.country,
-            ville = jsonResponse.city,
-            location = jsonResponse.loc
-            //(jsonResponse) => console.log(jsonResponse.ip, jsonResponse.country)
-        )   
-        
-        //enregistrer dans le tableau
-        infoIp[6] = pays;
-        infoIp[7] = ville;
-        infoIp[8] = location;
-    });  
-    
-    print(infosIps);
-    
-    return infosIps;
-}
+//indexs non existants 
+//je sais pas comment intégrer et ajouter js
+//ajouter les markers
 
