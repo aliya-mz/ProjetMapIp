@@ -164,6 +164,8 @@ function AnalyserDonnees($informations){
 
 //Appeler l'api de ipinfo pour récupérer les coordonnées géographiques de chaque adresse ip
 function RecupererLocationIp($informations){
+    $infosCompletes = [];
+
     //Appeler l'API
     foreach($informations as $information){
         $pays = "";
@@ -177,21 +179,30 @@ function RecupererLocationIp($informations){
 
         var_dump($infosLoc);
 
-        //apparemment il trouve pas les index suivants alors qu'ils existent
-        $pays = $infosLoc["country"];
-        $ville = $infosLoc["city"];
-        $latitude = explode(",",$infosLoc["loc"])[0];
-        $longitude = explode(",",$infosLoc["loc"])[1];
+        //Si la location a été trouvée pour cette ip
+        if(array_key_exists("country", $infosLoc) && array_key_exists("city", $infosLoc) && array_key_exists("loc", $infosLoc)){
+            $pays = $infosLoc["country"];
+            $ville = $infosLoc["city"];
+            $latitude = explode(",",$infosLoc["loc"])[0];
+            $longitude = explode(",",$infosLoc["loc"])[1];
 
-        //enregistrer les informations
-        $information[6] = $pays;
-        $information[7] = $ville;
-        $information[8] = $latitude;
-        $information[9] = $longitude;
+            //enregistrer les informations
+            array_push($information,$pays);
+            array_push($information,$ville);
+            array_push($information,$latitude);
+            array_push($information,$longitude);
+        }
+        else{
+            array_push($information,null);
+            array_push($information,null);
+            array_push($information,null);
+            array_push($information,null);
+        }        
+        array_push($infosCompletes, $information);
     }
     
-    var_dump($informations);
-    return $informations;
+    var_dump($infosCompletes);
+    return $infosCompletes;
 }
 
 //Formater les informations pour les afficher dans la popup 
